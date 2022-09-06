@@ -24,7 +24,7 @@ namespace PathFind
         // grid: grid to search in.
         // startPos: starting position.
         // targetPos: ending position.
-        public static List<Point> FindPath(Grid grid, Point startPos, Point targetPos)
+        public static List<Point> FindPath(GridPF grid, Point startPos, Point targetPos)
         {
             // find path
             List<Node> nodes_path = _ImpFindPath(grid, startPos, targetPos);
@@ -42,7 +42,7 @@ namespace PathFind
         }
 
         // internal function to find path, don't use this one from outside
-        private static List<Node> _ImpFindPath(Grid grid, Point startPos, Point targetPos)
+        private static List<Node> _ImpFindPath(GridPF grid, Point startPos, Point targetPos)
         {
             Node startNode = grid.nodes[startPos.x, startPos.y];
             Node targetNode = grid.nodes[targetPos.x, targetPos.y];
@@ -93,7 +93,7 @@ namespace PathFind
             return null;
         }
 
-        private static List<Node> RetracePath(Grid grid, Node startNode, Node endNode)
+        private static List<Node> RetracePath(GridPF grid, Node startNode, Node endNode)
         {
             List<Node> path = new List<Node>();
             Node currentNode = endNode;

@@ -9,7 +9,13 @@ public class CharacterPathfinding : MonoBehaviour
     public List<PathFind.Point> path;
 
     Rigidbody2D body;
-    
+
+    PathFind.GridPF grid;
+    PathFind.Point _from;
+    PathFind.Point _to;
+
+    Animator animator;
+
     [Header ("Pathfinding References")]
     public Tilemap walkableArea;
     public Tilemap blockedArea;
@@ -21,33 +27,38 @@ public class CharacterPathfinding : MonoBehaviour
     private void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         // create the tiles map
         tilesmap = GetGrid();
-        // every float in the array represent the cost of passing the tile at that position.
-        // use 0.0f for blocking tiles.
 
         // create a grid
-        PathFind.Grid grid = new PathFind.Grid(tilesmap.GetLength(0), tilesmap.GetLength(1), tilesmap);
+        grid = new PathFind.GridPF(tilesmap.GetLength(0), tilesmap.GetLength(1), tilesmap);
+    }
 
-        // create source and target points
-        PathFind.Point _from = new PathFind.Point(0, 0);
-        PathFind.Point _to = new PathFind.Point(10, 1);
-
-        // get path
-        // path will either be a list of Points (x, y), or an empty list if no path is found.
+    private void MoveToTile(int targetX, int targetY)
+    {
+        _from = new PathFind.Point(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
+        _to = new PathFind.Point(targetX, targetY);
         path = PathFind.Pathfinding.FindPath(grid, _from, _to);
-
-        foreach(PathFind.Point point in path)
-        {
-            Debug.Log(point.x + ", " + point.y);
-        }
     }
 
     private void Update()
     {
+        var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var noZ = new Vector3(pos.x, pos.y);
+        Vector3Int mouseCell = FindObjectOfType<Grid>().WorldToCell(noZ);
+        
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (mouseCell.x >= -1 && mouseCell.x <= tilesmap.GetLength(0) && mouseCell.y >= -1 && mouseCell.y <= tilesmap.GetLength(1))
+            {
+                MoveToTile(mouseCell.x + 1, mouseCell.y + 1);
+            }
+        }
+
         // move through the path
-        if(path.Count > 0)
+        if(path != null && path.Count > 0)
         {
             if(Vector2.Distance(this.transform.position, new Vector2(path[0].x, path[0].y)) >= .1f)
             {
@@ -55,7 +66,7 @@ public class CharacterPathfinding : MonoBehaviour
             }
             else
             {
-                body.velocity = Vector2.zero;
+                //body.velocity = Vector2.zero;
                 path.RemoveAt(0);
             }
         }
@@ -63,8 +74,24 @@ public class CharacterPathfinding : MonoBehaviour
         {
             // make sure we're exactly on the space we want to end on
             this.transform.position = new Vector2(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
+
+            // make sure velocity is zeroed and update the animator
+            body.velocity = Vector2.zero;
         }
         
+        // update the animator
+        if(body.velocity == Vector2.zero)
+        {
+            animator.SetBool("Walking", false);
+            //animator.SetFloat("X", 0f);
+            //animator.SetFloat("Y", 0f);
+        } else
+        {
+            animator.SetBool("Walking", true);
+            animator.SetFloat("X", body.velocity.normalized.x);
+            animator.SetFloat("Y", body.velocity.normalized.y);
+        }
+
     }
 
     private float[,] GetGrid()
@@ -78,7 +105,6 @@ public class CharacterPathfinding : MonoBehaviour
             for (int y = walkableArea.cellBounds.yMin; y <= walkableArea.cellBounds.yMax; y++)
             {
                 if(walkableArea.GetTile(new Vector3Int(x, y, 0))){
-                    Debug.Log(x + ", " + y + " - Walkable");
                     tilesmap[x + 1, y + 1] = 1f;
                 }
             }
@@ -90,7 +116,6 @@ public class CharacterPathfinding : MonoBehaviour
             {
                 if (blockedArea.GetTile(new Vector3Int(x, y, 0)))
                 {
-                    Debug.Log(x + ", " + y + " - Not Walkable");
                     tilesmap[x + 1, y + 1] = 0f;
                 }
             }

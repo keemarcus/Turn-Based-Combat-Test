@@ -6,7 +6,7 @@ namespace PathFind
     /**
     * The grid of nodes we use to find path
     */
-    public class Grid
+    public class GridPF
     {
         public Node[,] nodes;
         int gridSizeX, gridSizeY;
@@ -19,7 +19,7 @@ namespace PathFind
         *               0.0f = unwalkable tile.
         *               1.0f = normal tile.
         */
-        public Grid(int width, int height, float[,] tiles_costs)
+        public GridPF(int width, int height, float[,] tiles_costs)
         {
             gridSizeX = width;
             gridSizeY = height;
@@ -41,7 +41,7 @@ namespace PathFind
         * height: grid height.
         * walkable_tiles: the tilemap. true for walkable, false for blocking.
         */
-        public Grid(int width, int height, bool[,] walkable_tiles)
+        public GridPF(int width, int height, bool[,] walkable_tiles)
         {
             gridSizeX = width;
             gridSizeY = height;
