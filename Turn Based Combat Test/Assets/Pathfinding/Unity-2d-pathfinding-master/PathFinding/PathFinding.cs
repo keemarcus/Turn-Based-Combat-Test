@@ -41,6 +41,30 @@ namespace PathFind
             return ret;
         }
 
+        public static List<Point> FindPath(GridPF grid, Point startPos, Point targetPos, int walkingRange)
+        {
+            // convert to a list of points and return
+            List<Point> ret = new List<Point>();
+
+            // find path
+            List<Node> nodes_path = _ImpFindPath(grid, startPos, targetPos);
+
+            // check to see if the target point is within the walking range
+            int distance = GetPathDistance(nodes_path);
+            //Debug.Log("Distance = " + distance);
+            if (distance > walkingRange)
+            {
+                return ret;
+            }else if (nodes_path != null)
+            {
+                foreach (Node node in nodes_path)
+                {
+                    ret.Add(new Point(node.gridX, node.gridY));
+                }
+            }
+            return ret;
+        }
+
         // internal function to find path, don't use this one from outside
         private static List<Node> _ImpFindPath(GridPF grid, Point startPos, Point targetPos)
         {
@@ -112,9 +136,26 @@ namespace PathFind
             int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
             int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
 
-            if (dstX > dstY)
-                return 14 * dstY + 10 * (dstX - dstY);
-            return 14 * dstX + 10 * (dstY - dstX);
+            return dstX + dstY;
+            //if (dstX > dstY)
+            //    return 14 * dstY + 10 * (dstX - dstY);
+            //return 14 * dstX + 10 * (dstY - dstX);
+        }
+
+        private static int GetPathDistance(List<Node> nodes_path)
+        {
+            if(nodes_path == null) { return -1; } else
+            { return nodes_path.Count; }
+            
+        }
+
+        public static int GetPathDistance(GridPF grid, Point startPos, Point targetPos)
+        {
+            // find path
+            List<Node> nodes_path = _ImpFindPath(grid, startPos, targetPos);
+
+            // return the path distance
+            return GetPathDistance(nodes_path);
         }
     }
 
