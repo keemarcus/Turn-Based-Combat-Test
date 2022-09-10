@@ -12,8 +12,10 @@ public class GridManager : MonoBehaviour
     public Tilemap blockedArea;
     public GameObject walkableIndicator;
     public GameObject blockedIndicator;
-    // Start is called before the first frame update
-    void Start()
+    public Transform maxBound;
+    public Transform minBound;
+
+    void Awake()
     {
         // create the tiles map
         tilesmap = GetGrid();
@@ -22,14 +24,10 @@ public class GridManager : MonoBehaviour
         grid = new PathFind.GridPF(tilesmap.GetLength(0), tilesmap.GetLength(1), tilesmap);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // used to highlight which tiles the character can walk to and which are blocked
     public void HighlightWalkableTiles(Vector2 startingPosition, int walkingRange)
     {        
+        // get rid of any existing indicators
         foreach (GameObject gameObject in FindObjectsOfType<GameObject>())
         {
             if (gameObject.tag == "Walkable Indicator")
@@ -38,45 +36,59 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        for (int x = 0; x < tilesmap.GetLength(0); x++)
+        // get the square bounds of the walking range
+        int startingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) - walkingRange, 0, tilesmap.GetLength(0) - 1);
+        int endingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) + walkingRange, 0, tilesmap.GetLength(0) - 1);
+        int startingY = Mathf.Clamp(Mathf.RoundToInt(startingPosition.y) - walkingRange, 0, tilesmap.GetLength(1) - 1);
+        int endingY = Mathf.Clamp(Mathf.RoundToInt(startingPosition.y) + walkingRange, 0, tilesmap.GetLength(1) - 1);
+        
+        // loop through these bounds
+        for (int x = startingX; x <= endingX; x++)
         {
-            for (int y = 0; y < tilesmap.GetLength(1); y++)
+            for (int y = startingY; y <= endingY; y++)
             {
-                //Debug.Log("TIle - " + x + "," + y);
+                // get the actual walking distance from the starting position to the current tile
                 int distance = PathFind.Pathfinding.GetPathDistance(grid, new PathFind.Point(Mathf.RoundToInt(startingPosition.x), Mathf.RoundToInt(startingPosition.y)), new PathFind.Point(x, y));
-                if (distance <= walkingRange)
-                {
-                    if (distance <= 0)
-                    {
-                        if (Mathf.Abs(x - Mathf.RoundToInt(startingPosition.x)) + Mathf.Abs(y - Mathf.RoundToInt(startingPosition.y)) <= walkingRange) { Instantiate(blockedIndicator, new Vector2(x, y), Quaternion.identity); }
-                    }
-                    else
-                    {
-                        Instantiate(walkableIndicator, new Vector2(x, y), Quaternion.identity);
-                    }
 
+                // ignore any space outside of the walking range
+                if (distance > walkingRange || (Mathf.Abs(x - Mathf.RoundToInt(startingPosition.x)) + Mathf.Abs(y - Mathf.RoundToInt(startingPosition.y)) > walkingRange)) { continue; }
+
+                // a distance of >0 means the tile is walkable
+                if (distance > 0)
+                {
+                    // create a walkable indicator on this space
+                    Instantiate(walkableIndicator, new Vector2(x, y), Quaternion.identity);
+                }
+                else
+                {
+                    // create a blocked indicator on this space
+                    Instantiate(blockedIndicator, new Vector2(x, y), Quaternion.identity);
                 }
             }
         }
     }
 
+    // used to set up the grid at start
     private float[,] GetGrid()
     {
-        // use the indexes of the tiles to set the grid size
-        float[,] tilesmap = new float[walkableArea.cellBounds.size.x - 2, walkableArea.cellBounds.size.y - 1];
+        // use the positions of the bounds to set the grid size
+        float[,] tilesmap = new float[Mathf.RoundToInt(maxBound.position.x), Mathf.RoundToInt(maxBound.position.y)];
 
         // set the values for the tiles
-        for (int x = walkableArea.cellBounds.xMin; x <= walkableArea.cellBounds.xMax - 1; x++)
+        for (int x = Mathf.RoundToInt(minBound.position.x); x < Mathf.RoundToInt(maxBound.position.x); x++)
         {
-            for (int y = walkableArea.cellBounds.yMin; y <= walkableArea.cellBounds.yMax - 1; y++)
+            for (int y = Mathf.RoundToInt(minBound.position.y); y < Mathf.RoundToInt(maxBound.position.y); y++)
             {
-                if (walkableArea.GetTile(new Vector3Int(x, y, 0)))
+                //Debug.Log("mapping tile - " + x + "," + y);
+                if (walkableArea.GetTile(new Vector3Int(x - 1, y - 1, 0)))
                 {
-                    tilesmap[x + 1, y + 1] = 1f;
+                    // a value of 1 means the tile is walkable
+                    tilesmap[x, y] = 1f;
                 }
-                if (blockedArea.GetTile(new Vector3Int(x, y, 0)))
+                if (blockedArea.GetTile(new Vector3Int(x - 1, y - 1, 0)))
                 {
-                    tilesmap[x + 1, y + 1] = 0f;
+                    // a value of 0 means the tile is blocked
+                    tilesmap[x, y] = 0f;
                 }
             }
         }
@@ -84,25 +96,22 @@ public class GridManager : MonoBehaviour
         return tilesmap;
     }
 
+    // used to build the path to pass to character pathfinding script
     public List<PathFind.Point> GetPath(PathFind.Point startPoint, PathFind.Point endPoint, int walkingRange)
     {
         return PathFind.Pathfinding.FindPath(grid, startPoint, endPoint, walkingRange);
     }
 
+    // used to check if a point is within the bounds of the current grid to avoid errors
     public bool CheckIfPointOnGrid(Vector3Int point)
     {
         return (point.x >= -1 && point.x <= tilesmap.GetLength(0) && point.y >= -1 && point.y <= tilesmap.GetLength(1));
     }
 
-    public void SetTileWalkable(Vector2Int tile, bool walkable)
+    // used to change the walkable value for a single tile in the grid 
+    public void SetTileWalkable(Vector2Int tile, int newValue)
     {
-        Debug.Log("Tile - " + tile + " Walkable - " + walkable);
-        if (walkable)
-        {
-            tilesmap[tile.x, tile.y] = 1f;
-        } else
-        {
-            tilesmap[tile.x, tile.y] = 0f;
-        }
+        if (!CheckIfPointOnGrid((Vector3Int) tile)) { return; }
+        tilesmap[tile.x, tile.y] = newValue;
     }
 }
