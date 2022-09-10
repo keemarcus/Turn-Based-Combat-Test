@@ -566,10 +566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c55d3a82041a847a926e568c7d8c25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkableArea: {fileID: 1857099286}
-  blockedArea: {fileID: 549218039}
-  walkableIndicator: {fileID: 8673551799462750636, guid: 0a2561fdfdba5aa4ea7bf01736e5a101, type: 3}
-  blockedIndicator: {fileID: 1870068696144767569, guid: 385fc5303831bd94eb8cde1bd204c131, type: 3}
+  gridManager: {fileID: 0}
   walkingRange: 5
 --- !u!50 &870625296
 Rigidbody2D:
@@ -2188,6 +2185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1919297331}
   - component: {fileID: 1919297330}
+  - component: {fileID: 1919297332}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -2229,3 +2227,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0.5, y: 0.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1919297332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1919297329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8063656c4c5d0e64896f0b63b2d2c14f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkableArea: {fileID: 1857099286}
+  blockedArea: {fileID: 549218039}
+  walkableIndicator: {fileID: 8673551799462750636, guid: 0a2561fdfdba5aa4ea7bf01736e5a101, type: 3}
+  blockedIndicator: {fileID: 1870068696144767569, guid: 385fc5303831bd94eb8cde1bd204c131, type: 3}

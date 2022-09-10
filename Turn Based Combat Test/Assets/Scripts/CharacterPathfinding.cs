@@ -5,75 +5,41 @@ using UnityEngine.Tilemaps;
 
 public class CharacterPathfinding : MonoBehaviour
 {
-    public float[,] tilesmap;
     public List<PathFind.Point> path;
 
     Rigidbody2D body;
 
-    PathFind.GridPF grid;
     PathFind.Point _from;
     PathFind.Point _to;
 
     Animator animator;
 
-    [Header ("Pathfinding References")]
-    public Tilemap walkableArea;
-    public Tilemap blockedArea;
-    public GameObject walkableIndicator;
-    public GameObject blockedIndicator;
+    [Header("Pathfinding References")]
+    //public Tilemap walkableArea;
+    //public Tilemap blockedArea;
+    //public GameObject walkableIndicator;
+    //public GameObject blockedIndicator;
+    public GridManager gridManager;
     public int walkingRange = 5;
 
     private void Start()
     {
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        gridManager = FindObjectOfType<GridManager>();
 
-        // create the tiles map
-        tilesmap = GetGrid();
-
-        // create a grid
-        grid = new PathFind.GridPF(tilesmap.GetLength(0), tilesmap.GetLength(1), tilesmap);
-
-        HighlightWalkableTiles();
+        gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), false);
+        gridManager.HighlightWalkableTiles(this.transform.position, walkingRange);
     }
 
     private void MoveToTile(int targetX, int targetY)
     {
         _from = new PathFind.Point(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
         _to = new PathFind.Point(targetX, targetY);
-        path = PathFind.Pathfinding.FindPath(grid, _from, _to, walkingRange);
+        path = gridManager.GetPath(_from, _to, walkingRange);
     }
 
-    private void HighlightWalkableTiles()
-    {
-        foreach(GameObject gameObject in FindObjectsOfType<GameObject>())
-        {
-            if(gameObject.tag == "Walkable Indicator")
-            {
-                Destroy(gameObject);
-            }
-        }
-
-        for (int x = 0; x < tilesmap.GetLength(0); x++){
-            for (int y = 0; y < tilesmap.GetLength(1); y++)
-            {
-                //Debug.Log("TIle - " + x + "," + y);
-                int distance = PathFind.Pathfinding.GetPathDistance(grid, new PathFind.Point(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), new PathFind.Point(x, y));
-                if(distance <= walkingRange)
-                {
-                    if (distance < 0)
-                    {
-                        if(Mathf.Abs(x - Mathf.RoundToInt(this.transform.position.x)) + Mathf.Abs(y - Mathf.RoundToInt(this.transform.position.y)) <= walkingRange){ Instantiate(blockedIndicator, new Vector2(x, y), Quaternion.identity); }
-                    }
-                    else
-                    {
-                        Instantiate(walkableIndicator, new Vector2(x, y), Quaternion.identity);
-                    }
-                    
-                }
-            }
-        }
-    }
+    
 
     private void Update()
     {
@@ -83,7 +49,7 @@ public class CharacterPathfinding : MonoBehaviour
         
         if (Input.GetMouseButtonUp(0))
         {
-            if (mouseCell.x >= -1 && mouseCell.x <= tilesmap.GetLength(0) && mouseCell.y >= -1 && mouseCell.y <= tilesmap.GetLength(1))
+            if (gridManager.CheckIfPointOnGrid(mouseCell))
             {
                 MoveToTile(mouseCell.x + 1, mouseCell.y + 1);
             }
@@ -110,7 +76,8 @@ public class CharacterPathfinding : MonoBehaviour
             // make sure velocity is zeroed and update the animator
             body.velocity = Vector2.zero;
 
-            HighlightWalkableTiles();
+            gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), false);
+            gridManager.HighlightWalkableTiles(this.transform.position, walkingRange);
         }
         
         // update the animator
@@ -126,28 +93,5 @@ public class CharacterPathfinding : MonoBehaviour
             animator.SetFloat("Y", body.velocity.normalized.y);
         }
 
-    }
-
-    private float[,] GetGrid()
-    {    
-        // use the indexes of the tiles to set the grid size
-        float[,] tilesmap = new float[walkableArea.cellBounds.size.x - 2, walkableArea.cellBounds.size.y - 1];
-
-        // set the values for the tiles
-        for(int x = walkableArea.cellBounds.xMin; x <= walkableArea.cellBounds.xMax - 1; x++)
-        {
-            for (int y = walkableArea.cellBounds.yMin; y <= walkableArea.cellBounds.yMax - 1; y++)
-            {
-                if(walkableArea.GetTile(new Vector3Int(x, y, 0))){
-                    tilesmap[x + 1, y + 1] = 1f;
-                }
-                if (blockedArea.GetTile(new Vector3Int(x, y, 0)))
-                {
-                    tilesmap[x + 1, y + 1] = 0f;
-                }
-            }
-        }
-
-        return tilesmap;
     }
 }
