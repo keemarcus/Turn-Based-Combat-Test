@@ -14,6 +14,8 @@ public class CharacterPathfinding : MonoBehaviour
 
     Animator animator;
 
+    public bool turn;
+
     [Header("Pathfinding References")]
     public GridManager gridManager;
     public int walkingRange = 5;
@@ -36,13 +38,15 @@ public class CharacterPathfinding : MonoBehaviour
 
     private void Update()
     {
+        if (!turn) { return; }
+        
         // get the mouse position on the grid
         var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var noZ = new Vector3(pos.x, pos.y);
         Vector3Int mouseCell = FindObjectOfType<Grid>().WorldToCell(noZ);
         
         // only register clicks if we're not already moving
-        if (Input.GetMouseButtonUp(0) && body.velocity == Vector2.zero)
+        if (Input.GetMouseButtonUp(1) && body.velocity == Vector2.zero)
         {
             if (gridManager.CheckIfPointOnGrid(mouseCell))
             {
