@@ -16,15 +16,19 @@ public class CharacterPathfinding : MonoBehaviour
 
     public bool turn;
 
+    public TurnManager turnManager;
+
     [Header("Pathfinding References")]
     public GridManager gridManager;
     public int walkingRange = 5;
+    public int movesLeft;
 
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         gridManager = FindObjectOfType<GridManager>();
+        turn = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
     }
 
     private void MoveToTile(int targetX, int targetY)
@@ -48,7 +52,7 @@ public class CharacterPathfinding : MonoBehaviour
         // only register clicks if we're not already moving
         if (Input.GetMouseButtonUp(1) && body.velocity == Vector2.zero)
         {
-            if (gridManager.CheckIfPointOnGrid(mouseCell))
+            if (gridManager.CheckIfPointOnGrid(mouseCell) && gridManager.CheckIfPointInRange(movesLeft, this.transform.position, noZ))
             {
                 MoveToTile(mouseCell.x + 1, mouseCell.y + 1);
             }
@@ -64,6 +68,8 @@ public class CharacterPathfinding : MonoBehaviour
             else
             {
                 path.RemoveAt(0);
+                // remove a space from our moves left
+                UpdateMovesLeft(1);
             }
         }
         else // we're at the end of the path
@@ -76,7 +82,7 @@ public class CharacterPathfinding : MonoBehaviour
 
             // update the grid manager
             gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 0);
-            gridManager.HighlightWalkableTiles(this.transform.position, walkingRange);
+            gridManager.HighlightWalkableTiles(this.transform.position, movesLeft);
         }
         
         // update the animator
@@ -90,5 +96,25 @@ public class CharacterPathfinding : MonoBehaviour
             animator.SetFloat("Y", body.velocity.normalized.y);
         }
 
+    }
+
+    public void StartTurn()
+    {
+        movesLeft = walkingRange;
+    }
+
+    public void UpdateMovesLeft(int spacesWalked)
+    {
+        if(spacesWalked >= movesLeft)
+        {
+            movesLeft = 0;
+        }
+        else
+        {
+            movesLeft -= spacesWalked;
+        }
+
+        //update the ui element
+        turnManager.UpdateMoveCounter(movesLeft);
     }
 }

@@ -8,6 +8,7 @@ public class TurnManager : MonoBehaviour
     int currentTurn = 0;
 
     CameraController cameraController;
+    public TMPro.TextMeshProUGUI moveCounter;
     
     // Start is called before the first frame update
     void Start()
@@ -37,6 +38,8 @@ public class TurnManager : MonoBehaviour
     private void SetActiveCharacter(int placeInInitiative)
     {
         cameraController.playerTransform = initiative[placeInInitiative].gameObject.transform;
+        initiative[placeInInitiative].StartTurn();
+        UpdateMoveCounter(initiative[placeInInitiative].movesLeft);
 
         for (int i = 0; i < initiative.Length; i++)
         {
@@ -50,5 +53,10 @@ public class TurnManager : MonoBehaviour
                 initiative[i].turn = false;
             }
         }
+    }
+
+    public void UpdateMoveCounter(int movesLeft)
+    {
+        moveCounter.text = "Moves Left: " + movesLeft;
     }
 }

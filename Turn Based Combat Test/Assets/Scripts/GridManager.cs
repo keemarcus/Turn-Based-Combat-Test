@@ -108,6 +108,13 @@ public class GridManager : MonoBehaviour
         return (point.x >= -1 && point.x <= tilesmap.GetLength(0) && point.y >= -1 && point.y <= tilesmap.GetLength(1));
     }
 
+    public bool CheckIfPointInRange(int range, Vector3 startingPosition, Vector3 endingPosition)
+    {
+        int distance = PathFind.Pathfinding.GetPathDistance(grid, new PathFind.Point(Mathf.RoundToInt(startingPosition.x), Mathf.RoundToInt(startingPosition.y)), new PathFind.Point(Mathf.RoundToInt(endingPosition.x), Mathf.RoundToInt(endingPosition.y)));
+        Debug.Log(distance);
+        return ( distance <= range);
+    }
+
     // used to change the walkable value for a single tile in the grid 
     public void SetTileWalkable(Vector2Int tile, int newValue)
     {
