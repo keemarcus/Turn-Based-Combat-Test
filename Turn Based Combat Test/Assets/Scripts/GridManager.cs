@@ -36,9 +36,6 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        // check the current positions of all characters
-        //CheckCharacterTiles();
-
         // get the square bounds of the walking range
         int startingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) - walkingRange, 0, tilesmap.GetLength(0) - 1);
         int endingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) + walkingRange, 0, tilesmap.GetLength(0) - 1);
@@ -114,7 +111,6 @@ public class GridManager : MonoBehaviour
     public bool CheckIfPointInRange(int range, Vector3 startingPosition, Vector3 endingPosition)
     {
         int distance = PathFind.Pathfinding.GetPathDistance(grid, new PathFind.Point(Mathf.RoundToInt(startingPosition.x), Mathf.RoundToInt(startingPosition.y)), new PathFind.Point(Mathf.RoundToInt(endingPosition.x), Mathf.RoundToInt(endingPosition.y)));
-        //Debug.Log(distance);
         return ( distance <= range);
     }
 
@@ -135,5 +131,27 @@ public class GridManager : MonoBehaviour
             SetTileWalkable(new Vector2Int(Mathf.RoundToInt(character.transform.position.x), Mathf.RoundToInt(character.transform.position.y)), 0f);
             
         }
+    }
+
+    public bool CheckIfCharacterOnTile(Vector2Int tile)
+    {
+        if(tilesmap[tile.x, tile.y] == -1f) { return true; }
+        else { return false; }
+    }
+
+    public CharacterPathfinding GetCharacterOnTile(Vector2Int tile)
+    {
+        CharacterPathfinding rightCharacter = null;
+        CharacterPathfinding[] allCharacters = FindObjectsOfType<CharacterPathfinding>();
+        foreach(CharacterPathfinding character in allCharacters)
+        {
+            if(Vector2.Distance(character.transform.position, tile) < .1f)
+            {
+                rightCharacter = character;
+                break;
+            }
+        }
+
+        return rightCharacter;
     }
 }

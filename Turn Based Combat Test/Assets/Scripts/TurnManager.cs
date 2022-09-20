@@ -26,6 +26,8 @@ public class TurnManager : MonoBehaviour
 
     public void ChangeTurn()
     {
+        if (initiative[currentTurn].interacting) { return; }
+
         currentTurn += 1;
         if(currentTurn >= initiative.Length)
         {

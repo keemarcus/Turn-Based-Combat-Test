@@ -16,6 +16,11 @@ public class CharacterPathfinding : MonoBehaviour
 
     public bool turn;
     private bool doneMoving;
+    public bool interacting;
+    public int attackRange = 1;
+    public int maxHealth = 50;
+    public int health;
+    public int attackDamage = 10;
 
     public TurnManager turnManager;
 
@@ -31,6 +36,9 @@ public class CharacterPathfinding : MonoBehaviour
         gridManager = FindObjectOfType<GridManager>();
         turnManager = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
 
+        health = maxHealth;
+
+        interacting = false;
         doneMoving = false;
     }
 
@@ -42,7 +50,7 @@ public class CharacterPathfinding : MonoBehaviour
 
         // update the grid
         gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 1f);
-        gridManager.SetTileWalkable(new Vector2Int(targetX, targetY), 0f);
+        gridManager.SetTileWalkable(new Vector2Int(targetX, targetY), -1f);
 
         doneMoving = false;
     }
@@ -60,16 +68,40 @@ public class CharacterPathfinding : MonoBehaviour
         
         // only register clicks if we're not already moving
         if (Input.GetMouseButtonUp(1) && body.velocity == Vector2.zero)
-        {
-            if (gridManager.CheckIfPointOnGrid(mouseCell) && gridManager.CheckIfPointInRange(movesLeft, this.transform.position, noZ))
+        {    
+            if (gridManager.CheckIfPointOnGrid(mouseCell))
             {
-                MoveToTile(mouseCell.x + 1, mouseCell.y + 1);
+                if(gridManager.CheckIfCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y))) && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= attackRange)
+                {
+                    CharacterPathfinding enemy = gridManager.GetCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y)));
+                    if(enemy == null)
+                    {
+                        Debug.Log("No character found");
+                    }
+                    else
+                    {
+                        if (Attack(enemy))
+                        {
+                            Debug.Log("Killed " + enemy.gameObject.name);
+                        }
+                        else
+                        {
+                            Debug.Log(enemy.gameObject.name + " took " + this.attackDamage + " damage");
+                        }
+                    }
+                    
+                }else if(gridManager.CheckIfPointInRange(movesLeft, this.transform.position, noZ))
+                {
+                    MoveToTile(mouseCell.x + 1, mouseCell.y + 1);
+                }
             }
         }
 
         // move through the path if we have one
         if(path != null && path.Count > 0)
         {
+            interacting = true;
+
             if(Vector2.Distance(this.transform.position, new Vector2(path[0].x, path[0].y)) >= .1f)
             {
                 body.velocity = new Vector2(path[0].x - this.transform.position.x, path[0].y - this.transform.position.y).normalized * 3f;
@@ -93,6 +125,7 @@ public class CharacterPathfinding : MonoBehaviour
             //gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 0);
             gridManager.HighlightWalkableTiles(this.transform.position, movesLeft);
 
+            interacting = false;
             doneMoving = true;
         }
         
@@ -129,5 +162,19 @@ public class CharacterPathfinding : MonoBehaviour
 
         //update the ui element
         turnManager.UpdateMoveCounter(movesLeft);
+    }
+
+    public bool Attack(CharacterPathfinding enemy)
+    {
+        // a return value of true means that we killed the enemy we were targeting
+        return enemy.TakeDamage(this.attackDamage);
+    }
+
+    // can be used to damage or heal a character, a return value of true means the character is dead
+    public bool TakeDamage(int incomingDamage)
+    {
+        this.health = Mathf.Clamp(this.health - incomingDamage, 0, maxHealth);
+
+        return (this.health == 0);
     }
 }

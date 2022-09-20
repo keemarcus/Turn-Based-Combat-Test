@@ -21,7 +21,7 @@
         // _gridX, _gridY - tile location in grid.
         public Node(float _price, int _gridX, int _gridY)
         {
-            walkable = _price != 0.0f;
+            walkable = _price > 0.0f;
             penalty = _price;
             gridX = _gridX;
             gridY = _gridY;
