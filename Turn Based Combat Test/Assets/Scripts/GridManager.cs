@@ -36,6 +36,9 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        // check the current positions of all characters
+        //CheckCharacterTiles();
+
         // get the square bounds of the walking range
         int startingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) - walkingRange, 0, tilesmap.GetLength(0) - 1);
         int endingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) + walkingRange, 0, tilesmap.GetLength(0) - 1);
@@ -111,14 +114,26 @@ public class GridManager : MonoBehaviour
     public bool CheckIfPointInRange(int range, Vector3 startingPosition, Vector3 endingPosition)
     {
         int distance = PathFind.Pathfinding.GetPathDistance(grid, new PathFind.Point(Mathf.RoundToInt(startingPosition.x), Mathf.RoundToInt(startingPosition.y)), new PathFind.Point(Mathf.RoundToInt(endingPosition.x), Mathf.RoundToInt(endingPosition.y)));
-        Debug.Log(distance);
+        //Debug.Log(distance);
         return ( distance <= range);
     }
 
     // used to change the walkable value for a single tile in the grid 
-    public void SetTileWalkable(Vector2Int tile, int newValue)
+    public void SetTileWalkable(Vector2Int tile, float newValue)
     {
         if (!CheckIfPointOnGrid((Vector3Int) tile)) { return; }
         tilesmap[tile.x, tile.y] = newValue;
+        grid = new PathFind.GridPF(tilesmap.GetLength(0), tilesmap.GetLength(1), tilesmap);
+    }
+
+    public void CheckCharacterTiles()
+    {
+        CharacterPathfinding[] characters = FindObjectsOfType<CharacterPathfinding>();
+        foreach (CharacterPathfinding character in characters)
+        {
+            Debug.Log("Character at " + character.transform.position);
+            SetTileWalkable(new Vector2Int(Mathf.RoundToInt(character.transform.position.x), Mathf.RoundToInt(character.transform.position.y)), 0f);
+            
+        }
     }
 }

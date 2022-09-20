@@ -68,7 +68,7 @@ namespace PathFind
         // internal function to find path, don't use this one from outside
         private static List<Node> _ImpFindPath(GridPF grid, Point startPos, Point targetPos)
         {
-            if(startPos.x >= grid.nodes.GetLength(0) || startPos.y >= grid.nodes.GetLength(1) || targetPos.x >= grid.nodes.GetLength(0) || targetPos.y >= grid.nodes.GetLength(1))
+            if(startPos.x >= grid.nodes.GetLength(0) || startPos.y >= grid.nodes.GetLength(1) || targetPos.x >= grid.nodes.GetLength(0) || targetPos.y >= grid.nodes.GetLength(1))// || grid.nodes[targetPos.x, targetPos.y]. == 0f)
             {
                 return null;
             }

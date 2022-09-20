@@ -15,6 +15,7 @@ public class CharacterPathfinding : MonoBehaviour
     Animator animator;
 
     public bool turn;
+    private bool doneMoving;
 
     public TurnManager turnManager;
 
@@ -28,7 +29,9 @@ public class CharacterPathfinding : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         gridManager = FindObjectOfType<GridManager>();
-        turn = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
+        turnManager = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
+
+        doneMoving = false;
     }
 
     private void MoveToTile(int targetX, int targetY)
@@ -36,6 +39,12 @@ public class CharacterPathfinding : MonoBehaviour
         _from = new PathFind.Point(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
         _to = new PathFind.Point(targetX, targetY);
         path = gridManager.GetPath(_from, _to, walkingRange);
+
+        // update the grid
+        gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 1f);
+        gridManager.SetTileWalkable(new Vector2Int(targetX, targetY), 0f);
+
+        doneMoving = false;
     }
 
     
@@ -72,7 +81,7 @@ public class CharacterPathfinding : MonoBehaviour
                 UpdateMovesLeft(1);
             }
         }
-        else // we're at the end of the path
+        else if(!doneMoving)// we're at the end of the path
         {
             // make sure we're exactly on the space we want to end on
             this.transform.position = new Vector2(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
@@ -81,8 +90,10 @@ public class CharacterPathfinding : MonoBehaviour
             body.velocity = Vector2.zero;
 
             // update the grid manager
-            gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 0);
+            //gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 0);
             gridManager.HighlightWalkableTiles(this.transform.position, movesLeft);
+
+            doneMoving = true;
         }
         
         // update the animator
@@ -101,6 +112,8 @@ public class CharacterPathfinding : MonoBehaviour
     public void StartTurn()
     {
         movesLeft = walkingRange;
+
+        doneMoving = false;
     }
 
     public void UpdateMovesLeft(int spacesWalked)
