@@ -139,13 +139,13 @@ public class GridManager : MonoBehaviour
         else { return false; }
     }
 
-    public CharacterPathfinding GetCharacterOnTile(Vector2Int tile)
+    public CharacterManager GetCharacterOnTile(Vector2Int tile, CharacterManager characterLooking)
     {
-        CharacterPathfinding rightCharacter = null;
-        CharacterPathfinding[] allCharacters = FindObjectsOfType<CharacterPathfinding>();
-        foreach(CharacterPathfinding character in allCharacters)
+        CharacterManager rightCharacter = null;
+        CharacterManager[] allCharacters = FindObjectsOfType<CharacterManager>();
+        foreach(CharacterManager character in allCharacters)
         {
-            if(Vector2.Distance(character.transform.position, tile) < .1f)
+            if(character != characterLooking && Vector2.Distance(character.transform.position, tile) < .1f)
             {
                 rightCharacter = character;
                 break;

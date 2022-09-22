@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public CharacterPathfinding [] initiative;
+    public CharacterManager [] initiative;
     int currentTurn = 0;
 
     CameraController cameraController;
@@ -17,7 +17,7 @@ public class TurnManager : MonoBehaviour
         cameraController = FindObjectOfType<CameraController>();
         
         // get all the characters in the scene
-        initiative = FindObjectsOfType<CharacterPathfinding>();
+        initiative = FindObjectsOfType<CharacterManager>();
         
         // set the first character in initiative as active
         SetActiveCharacter(0);
@@ -41,14 +41,14 @@ public class TurnManager : MonoBehaviour
     {
         cameraController.playerTransform = initiative[placeInInitiative].gameObject.transform;
         initiative[placeInInitiative].StartTurn();
-        UpdateMoveCounter(initiative[placeInInitiative].movesLeft);
+        UpdateMoveCounter(initiative[placeInInitiative].charPathfinding.movesLeft);
 
         for (int i = 0; i < initiative.Length; i++)
         {
             if(i == placeInInitiative)
             {
                 initiative[i].turn = true;
-                
+                //Debug.Log("Active Character = " + initiative[i].gameObject.name);
             }
             else
             {
