@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    CharacterState currentState;
+    public CharacterState currentState;
+    public CharacterState deadState;
     public CharacterPathfinding charPathfinding;
     
     public Rigidbody2D body;
@@ -73,6 +74,10 @@ public class CharacterManager : MonoBehaviour
     {
         this.health = Mathf.Clamp(this.health - incomingDamage, 0, maxHealth);
 
+        if(health == 0)
+        {
+            currentState = deadState;
+        }
         return (this.health == 0);
     }
 }

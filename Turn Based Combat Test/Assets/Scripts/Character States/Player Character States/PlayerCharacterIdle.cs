@@ -34,7 +34,7 @@ public class PlayerCharacterIdle : CharacterState
                 if (characterManager.charPathfinding.gridManager.CheckIfCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y))) && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= characterManager.attackRange)
                 {
                     CharacterManager enemy = characterManager.charPathfinding.gridManager.GetCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y)), characterManager);
-                    if (enemy == null)
+                    if (enemy == null || enemy.currentState == enemy.deadState)
                     {
                         //Debug.Log("No character found");
                     }

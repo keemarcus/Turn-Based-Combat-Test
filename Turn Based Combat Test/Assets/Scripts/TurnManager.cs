@@ -34,7 +34,15 @@ public class TurnManager : MonoBehaviour
             currentTurn = 0;
         }
 
-        SetActiveCharacter(currentTurn);
+        //SetActiveCharacter(currentTurn);
+        if(initiative[currentTurn].currentState == initiative[currentTurn].deadState)
+        {
+            ChangeTurn();
+        }
+        else
+        {
+            SetActiveCharacter(currentTurn);
+        }
     }
 
     private void SetActiveCharacter(int placeInInitiative)

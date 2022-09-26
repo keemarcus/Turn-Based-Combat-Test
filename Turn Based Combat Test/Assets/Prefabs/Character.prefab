@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8259033159114245658}
   - component: {fileID: 8259033159114245661}
   - component: {fileID: 8259033159114245660}
+  - component: {fileID: 3411450996816953499}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -37,7 +38,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8259033159114245635
 SpriteRenderer:
@@ -159,6 +160,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40f9936934b6cf042bd607013c894276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: {fileID: 0}
+  deadState: {fileID: 3411450996816953499}
   charPathfinding: {fileID: 0}
   body: {fileID: 0}
   turn: 0
@@ -203,5 +206,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 526430f4bffc9f544b0ecc1762da49ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3411450996816953499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8259033159114245634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0e69ea4364e7a04ca4d14102862e58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
