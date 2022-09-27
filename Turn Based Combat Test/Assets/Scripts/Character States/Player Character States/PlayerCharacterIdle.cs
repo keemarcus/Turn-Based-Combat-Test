@@ -31,7 +31,7 @@ public class PlayerCharacterIdle : CharacterState
         {
             if (characterManager.charPathfinding.gridManager.CheckIfPointOnGrid(mouseCell))
             {
-                if (characterManager.charPathfinding.gridManager.CheckIfCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y))) && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= characterManager.attackRange)
+                if (characterManager.charPathfinding.gridManager.CheckIfCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y))) && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= characterManager.characterStats.AttackRange)
                 {
                     CharacterManager enemy = characterManager.charPathfinding.gridManager.GetCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y)), characterManager);
                     if (enemy == null || enemy.currentState == enemy.deadState)
@@ -46,7 +46,7 @@ public class PlayerCharacterIdle : CharacterState
                         }
                         else
                         {
-                            Debug.Log(enemy.gameObject.name + " took " + characterManager.attackDamage + " damage");
+                            Debug.Log(enemy.gameObject.name + " took " + (this.characterManager.characterStats.BaseDamage + this.characterManager.characterStats.HitBonus - enemy.characterStats.DamageResistance) + " damage");
                         }
                     }
 

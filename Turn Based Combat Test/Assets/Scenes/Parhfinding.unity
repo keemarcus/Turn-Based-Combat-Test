@@ -179,6 +179,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.MaxHP
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.HitBonus
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.BaseDamage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.AttackRange
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.ActionPoints
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.DamageResistance
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
@@ -8749,6 +8773,34 @@ PrefabInstance:
     - target: {fileID: 8259033159114245634, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.MaxHP
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.HitBonus
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.CurrentHP
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.BaseDamage
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.AttackRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.ActionPoints
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
+      propertyPath: characterStats.DamageResistance
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

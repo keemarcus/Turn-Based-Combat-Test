@@ -15,7 +15,7 @@ public class PlayerCharacterDead : CharacterState
     public override CharacterState TickState(float delta)
     {
         // if the character has regained some hp, put them back in the idle state, otherwise just return dead state
-        if(characterManager.health > 0)
+        if(characterManager.characterStats.CurrentHP > 0)
         {
             if (characterManager.turn)
             {

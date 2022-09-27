@@ -8,7 +8,7 @@ public class CharacterPathfinding : MonoBehaviour
     [Header("Pathfinding References")]
     public GridManager gridManager;
     public List<PathFind.Point> path;
-    public int walkingRange = 5;
+    //public int walkingRange = 5;
     public int movesLeft;
     PathFind.Point _from;
     PathFind.Point _to;
@@ -24,7 +24,7 @@ public class CharacterPathfinding : MonoBehaviour
     {
         _from = new PathFind.Point(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y));
         _to = new PathFind.Point(targetX, targetY);
-        path = gridManager.GetPath(_from, _to, walkingRange);
+        path = gridManager.GetPath(_from, _to, characterManager.characterStats.ActionPoints);
 
         // update the grid
         gridManager.SetTileWalkable(new Vector2Int(Mathf.RoundToInt(this.transform.position.x), Mathf.RoundToInt(this.transform.position.y)), 1f);

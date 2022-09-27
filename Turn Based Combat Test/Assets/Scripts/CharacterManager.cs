@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CharacterManager : MonoBehaviour
 {
@@ -14,10 +15,32 @@ public class CharacterManager : MonoBehaviour
     public bool turn;
     public bool doneMoving;
     public bool interacting;
-    public int attackRange = 1;
-    public int maxHealth = 50;
-    public int health;
-    public int attackDamage = 10;
+
+    public CharacterStats characterStats;
+
+    [Serializable]
+    public struct CharacterStats
+    {
+        [Header("Character Stats")]
+        public int MaxHP;
+        public int CurrentHP;
+        public int ActionPoints;
+        public int AttackRange;
+        public int BaseDamage;
+        public int HitBonus;
+        public int DamageResistance;
+
+        public CharacterStats(int maxHP, int actionPoints, int attackRange, int baseDamage, int hitBonus, int damageResistance)
+        {
+            MaxHP = maxHP;
+            CurrentHP = MaxHP;
+            ActionPoints = actionPoints;
+            AttackRange = attackRange;
+            BaseDamage = baseDamage;
+            HitBonus = hitBonus;
+            DamageResistance = damageResistance;
+        }
+    }
 
     public TurnManager turnManager;
 
@@ -29,7 +52,7 @@ public class CharacterManager : MonoBehaviour
         charPathfinding.gridManager = FindObjectOfType<GridManager>();
         turnManager = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
 
-        health = maxHealth;
+        characterStats.CurrentHP = characterStats.MaxHP;
 
         interacting = false;
         doneMoving = false;
@@ -58,26 +81,29 @@ public class CharacterManager : MonoBehaviour
 
     public void StartTurn()
     {
-        charPathfinding.movesLeft = charPathfinding.walkingRange;
+        charPathfinding.movesLeft = characterStats.ActionPoints;
 
         doneMoving = false;
     }
 
     public bool Attack(CharacterManager enemy)
     {
+        // calculate the damage amount
+        int damage = this.characterStats.BaseDamage + this.characterStats.HitBonus - enemy.characterStats.DamageResistance;
+
         // a return value of true means that we killed the enemy we were targeting
-        return enemy.TakeDamage(this.attackDamage);
+        return enemy.TakeDamage(damage);
     }
 
     // can be used to damage or heal a character, a return value of true means the character is dead
     public bool TakeDamage(int incomingDamage)
     {
-        this.health = Mathf.Clamp(this.health - incomingDamage, 0, maxHealth);
+        this.characterStats.CurrentHP = Mathf.Clamp(this.characterStats.CurrentHP - incomingDamage, 0, this.characterStats.MaxHP);
 
-        if(health == 0)
+        if(this.characterStats.CurrentHP == 0)
         {
             currentState = deadState;
         }
-        return (this.health == 0);
+        return (this.characterStats.CurrentHP == 0);
     }
 }
