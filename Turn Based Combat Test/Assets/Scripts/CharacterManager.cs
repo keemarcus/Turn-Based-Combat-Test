@@ -8,6 +8,7 @@ public class CharacterManager : MonoBehaviour
     public CharacterState currentState;
     public CharacterState deadState;
     public CharacterPathfinding charPathfinding;
+    public AttackIndicatorManager attackIndicator;
     
     public Rigidbody2D body;
     Animator animator;
@@ -26,16 +27,18 @@ public class CharacterManager : MonoBehaviour
         public int CurrentHP;
         public int ActionPoints;
         public int AttackRange;
+        public int AttackCost;
         public int BaseDamage;
         public int HitBonus;
         public int DamageResistance;
 
-        public CharacterStats(int maxHP, int actionPoints, int attackRange, int baseDamage, int hitBonus, int damageResistance)
+        public CharacterStats(int maxHP, int actionPoints, int attackRange, int attactCost, int baseDamage, int hitBonus, int damageResistance)
         {
             MaxHP = maxHP;
             CurrentHP = MaxHP;
             ActionPoints = actionPoints;
             AttackRange = attackRange;
+            AttackCost = attactCost;
             BaseDamage = baseDamage;
             HitBonus = hitBonus;
             DamageResistance = damageResistance;
@@ -51,6 +54,8 @@ public class CharacterManager : MonoBehaviour
         charPathfinding = GetComponent<CharacterPathfinding>();
         charPathfinding.gridManager = FindObjectOfType<GridManager>();
         turnManager = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
+
+        attackIndicator = FindObjectOfType<AttackIndicatorManager>();
 
         characterStats.CurrentHP = characterStats.MaxHP;
 
