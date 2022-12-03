@@ -9,6 +9,7 @@ public class CharacterManager : MonoBehaviour
     public CharacterState deadState;
     public CharacterPathfinding charPathfinding;
     public AttackIndicatorManager attackIndicator;
+    public HealthBarManager healthBarManager;
     
     public Rigidbody2D body;
     Animator animator;
@@ -56,8 +57,10 @@ public class CharacterManager : MonoBehaviour
         turnManager = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
 
         attackIndicator = FindObjectOfType<AttackIndicatorManager>();
+        healthBarManager = this.gameObject.GetComponentInChildren<HealthBarManager>();
 
         characterStats.CurrentHP = characterStats.MaxHP;
+        this.TakeDamage(0);
 
         interacting = false;
         doneMoving = false;
@@ -104,6 +107,9 @@ public class CharacterManager : MonoBehaviour
     public bool TakeDamage(int incomingDamage)
     {
         this.characterStats.CurrentHP = Mathf.Clamp(this.characterStats.CurrentHP - incomingDamage, 0, this.characterStats.MaxHP);
+
+        // update the healthbar
+        this.healthBarManager.SetValue((float)this.characterStats.CurrentHP / (float)this.characterStats.MaxHP);
 
         if(this.characterStats.CurrentHP == 0)
         {
