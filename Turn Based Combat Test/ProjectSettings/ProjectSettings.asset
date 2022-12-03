@@ -670,11 +670,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 2
-  cloudProjectId: 
+  cloudProjectId: 671b8867-98b9-4eb5-8d8a-8746287c04a6
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Turn Based Combat Test
+  organizationId: keemarcus
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
