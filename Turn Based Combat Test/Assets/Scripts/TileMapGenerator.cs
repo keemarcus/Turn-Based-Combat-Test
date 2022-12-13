@@ -18,8 +18,7 @@ public class TileMapGenerator : MonoBehaviour
     private int numberOfRows;
     private int numberOfColumns;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // get all the tilemap objects
         groundLayer = this.gameObject.transform.Find("Ground").GetComponent<Tilemap>();
@@ -50,12 +49,6 @@ public class TileMapGenerator : MonoBehaviour
         GenerateTileMap(refDataLines);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void GenerateTileMap(string[] refDataLines)
     {
         for(int ctr = numberOfRows - 1; ctr > -1; ctr--)
@@ -70,11 +63,18 @@ public class TileMapGenerator : MonoBehaviour
         {
             switch (row[ctr])
             {
+                case '-':
+                    // leave this space empty
+                    break;
                 case 'w':
+                    // place a wall tile in this space
                     wallLayer.SetTile(new Vector3Int(ctr, rownumber), wallTile);
+                    // also place a ground tile under this space
+                    groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
                     break;
                 case 'g':
-                    wallLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
+                    // place a ground tile in this space
+                    groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
                     break;
                 default:
                     Debug.Log("Unknown Tile ID found at (" + ctr + "," + rownumber + ") = " + row[ctr]);
