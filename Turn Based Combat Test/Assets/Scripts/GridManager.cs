@@ -15,7 +15,7 @@ public class GridManager : MonoBehaviour
     public Transform maxBound;
     public Transform minBound;
 
-    void Awake()
+    public void Setup()
     {
         // create the tiles map
         tilesmap = GetGrid();
@@ -37,10 +37,10 @@ public class GridManager : MonoBehaviour
         }
 
         // get the square bounds of the walking range
-        int startingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) - walkingRange, 0, tilesmap.GetLength(0) - 1);
-        int endingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) + walkingRange, 0, tilesmap.GetLength(0) - 1);
-        int startingY = Mathf.Clamp(Mathf.RoundToInt(startingPosition.y) - walkingRange, 0, tilesmap.GetLength(1) - 1);
-        int endingY = Mathf.Clamp(Mathf.RoundToInt(startingPosition.y) + walkingRange, 0, tilesmap.GetLength(1) - 1);
+        int startingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) - walkingRange, 1, tilesmap.GetLength(0) - 1);
+        int endingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) + walkingRange, 1, tilesmap.GetLength(0) - 1);
+        int startingY = Mathf.Clamp(Mathf.RoundToInt(startingPosition.y) - walkingRange, 1, tilesmap.GetLength(1) - 1);
+        int endingY = Mathf.Clamp(Mathf.RoundToInt(startingPosition.y) + walkingRange, 1, tilesmap.GetLength(1) - 1);
         
         // loop through these bounds
         for (int x = startingX; x <= endingX; x++)
@@ -49,6 +49,7 @@ public class GridManager : MonoBehaviour
             {
                 // get the actual walking distance from the starting position to the current tile
                 int distance = PathFind.Pathfinding.GetPathDistance(grid, new PathFind.Point(Mathf.RoundToInt(startingPosition.x), Mathf.RoundToInt(startingPosition.y)), new PathFind.Point(x, y));
+                //Debug.Log("Tile (" + x + "," + y + "): " + distance);
 
                 // ignore any space outside of the walking range
                 if (distance > walkingRange || (Mathf.Abs(x - Mathf.RoundToInt(startingPosition.x)) + Mathf.Abs(y - Mathf.RoundToInt(startingPosition.y)) > walkingRange)) { continue; }

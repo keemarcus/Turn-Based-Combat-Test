@@ -18,6 +18,8 @@ public class TileMapGenerator : MonoBehaviour
     public TextAsset refFile;
     private int numberOfRows;
     private int numberOfColumns;
+    public GridManager gridManager;
+
 
     void Awake()
     {
@@ -27,9 +29,13 @@ public class TileMapGenerator : MonoBehaviour
         wallLayer = this.gameObject.transform.Find("Walls").GetComponent<Tilemap>();
         if (wallLayer == null) { Debug.Log("No tilemap found for wall layer"); }
 
+        // get the grid manager
+        gridManager = this.gameObject.GetComponent<GridManager>();
+
+
         // generate the ref file
         //GenerateRefFile(20, 20,new[] {(2, 2, 5, 5), (10, 10, 15, 15) });
-        GenerateRefFile(50, 50, GenerateRoomPositions(50,50,5,20));
+        //GenerateRefFile(50, 50, GenerateRoomPositions(50,50,5,20));
 
         // get the ref file
         string refData = refFile.ToString();
@@ -53,6 +59,12 @@ public class TileMapGenerator : MonoBehaviour
 
         ClearTileMap();
         GenerateTileMap(refDataLines);
+
+        // set the bounds of the grid
+        gridManager.minBound.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        gridManager.maxBound.SetPositionAndRotation(new Vector3(numberOfColumns, numberOfRows, 0f), Quaternion.identity);
+
+        gridManager.Setup();
     }
 
     private void GenerateTileMap(string[] refDataLines)
