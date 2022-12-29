@@ -26,7 +26,8 @@ public class GridManager : MonoBehaviour
 
     // used to highlight which tiles the character can walk to and which are blocked
     public void HighlightWalkableTiles(Vector2 startingPosition, int walkingRange)
-    {        
+    {
+        Debug.Log("HighlightWalkableTiles called");
         // get rid of any existing indicators
         foreach (GameObject gameObject in FindObjectsOfType<GameObject>())
         {

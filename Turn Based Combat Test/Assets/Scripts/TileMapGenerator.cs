@@ -19,6 +19,7 @@ public class TileMapGenerator : MonoBehaviour
     private int numberOfRows;
     private int numberOfColumns;
     public GridManager gridManager;
+    public SpawnManager spawnManager;
 
 
     void Awake()
@@ -31,6 +32,7 @@ public class TileMapGenerator : MonoBehaviour
 
         // get the grid manager
         gridManager = this.gameObject.GetComponent<GridManager>();
+        spawnManager = this.gameObject.GetComponent<SpawnManager>();
 
 
         // generate the ref file
@@ -65,6 +67,7 @@ public class TileMapGenerator : MonoBehaviour
         gridManager.maxBound.SetPositionAndRotation(new Vector3(numberOfColumns, numberOfRows, 0f), Quaternion.identity);
 
         gridManager.Setup();
+        spawnManager.SpawnPlayers();
     }
 
     private void GenerateTileMap(string[] refDataLines)
@@ -92,6 +95,12 @@ public class TileMapGenerator : MonoBehaviour
                     break;
                 case 'g':
                     // place a ground tile in this space
+                    groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
+                    break;
+                case 'p':
+                    // add a player spawn point for this space
+                    spawnManager.AddPlayerSpawnPoint(new Vector2(ctr + 1, rownumber + 1));
+                    // also place a ground tile under this space
                     groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
                     break;
                 default:

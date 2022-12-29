@@ -324,7 +324,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8259033159114245634, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8259033159114245659, guid: 054825bc76d2e17459478ef878f5e00e, type: 3}
       propertyPath: characterStats.MaxHP
@@ -1755,6 +1755,7 @@ GameObject:
   - component: {fileID: 372622597}
   - component: {fileID: 372622596}
   - component: {fileID: 372622599}
+  - component: {fileID: 372622600}
   m_Layer: 0
   m_Name: Grid (1)
   m_TagString: Untagged
@@ -1779,6 +1780,7 @@ MonoBehaviour:
   wallTile: {fileID: 11400000, guid: aaa0e0b7159cb9541ad750da9e3a3aaa, type: 2}
   refFile: {fileID: 4900000, guid: 48d27cdbaea162d49b7f223c8fe66eb1, type: 3}
   gridManager: {fileID: 0}
+  spawnManager: {fileID: 0}
 --- !u!156049354 &372622597
 Grid:
   m_ObjectHideFlags: 0
@@ -1826,6 +1828,18 @@ MonoBehaviour:
   blockedIndicator: {fileID: 1870068696144767569, guid: 385fc5303831bd94eb8cde1bd204c131, type: 3}
   maxBound: {fileID: 2095658710}
   minBound: {fileID: 1768871896}
+--- !u!114 &372622600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372622595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd410bff97b9e741851e253d13f5f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &469344957
 GameObject:
   m_ObjectHideFlags: 0

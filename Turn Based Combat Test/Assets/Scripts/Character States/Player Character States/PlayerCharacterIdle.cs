@@ -6,20 +6,27 @@ public class PlayerCharacterIdle : CharacterState
 {
     CharacterState walkingState;
     CharacterState waitingState;
+    private bool tilesHighlighted;
 
     private void Start()
     {
         walkingState = this.gameObject.GetComponentInChildren<PlayerCharacterWalking>();
         waitingState = this.gameObject.GetComponentInChildren<PlayerCharacterWaiting>();
+        tilesHighlighted = false;
     }
 
     public override CharacterState TickState(float delta)
     {
         //Debug.Log("Current State = Idle");
 
-        if (!characterManager.turn) { return waitingState; }
+        if (!characterManager.turn) { tilesHighlighted = false; return waitingState; }
 
-        characterManager.charPathfinding.gridManager.HighlightWalkableTiles(this.transform.position, characterManager.charPathfinding.movesLeft);
+        if (!tilesHighlighted)
+        {
+            characterManager.charPathfinding.gridManager.HighlightWalkableTiles(this.transform.position, characterManager.charPathfinding.movesLeft);
+            tilesHighlighted = true;
+        }
+        
 
         // get the mouse position on the grid
         var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -75,6 +82,7 @@ public class PlayerCharacterIdle : CharacterState
                         else
                         {
                             characterManager.charPathfinding.UpdateMovesLeft(characterManager.characterStats.AttackCost);
+                            tilesHighlighted = false;
                         }
 
                         if (characterManager.Attack(enemy))
@@ -91,6 +99,7 @@ public class PlayerCharacterIdle : CharacterState
                 else if (characterManager.charPathfinding.gridManager.CheckIfPointInRange(characterManager.charPathfinding.movesLeft, this.transform.position, noZ))
                 {
                     characterManager.charPathfinding.MoveToTile(mouseCell.x + 1, mouseCell.y + 1);
+                    tilesHighlighted = false;
                     return walkingState;
                 }
             }
