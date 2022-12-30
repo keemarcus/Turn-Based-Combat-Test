@@ -6,7 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
     private List<Vector2> playerSpawnPoints;
 
-    private void Awake()
+    public void Initialize()
     {
         // initialize all the lists of spawn points
         playerSpawnPoints = new List<Vector2>();

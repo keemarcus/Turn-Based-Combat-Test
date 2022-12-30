@@ -36,8 +36,12 @@ public class TileMapGenerator : MonoBehaviour
 
 
         // generate the ref file
-        //GenerateRefFile(20, 20,new[] {(2, 2, 5, 5), (10, 10, 15, 15) });
-        //GenerateRefFile(50, 50, GenerateRoomPositions(50,50,5,20));
+        if (!CheckForRefFile())
+        {
+            //GenerateRefFile(20, 20,new[] {(2, 2, 5, 5), (10, 10, 15, 15) });
+            //GenerateRefFile(50, 50, GenerateRoomPositions(50,50,5,20));
+        }
+        
 
         // get the ref file
         string refData = refFile.ToString();
@@ -59,6 +63,7 @@ public class TileMapGenerator : MonoBehaviour
         }
         Debug.Log("Tilemap Width = " + numberOfColumns);
 
+        spawnManager.Initialize();
         ClearTileMap();
         GenerateTileMap(refDataLines);
 
@@ -82,6 +87,8 @@ public class TileMapGenerator : MonoBehaviour
     {
         for(int ctr = 0; ctr < row.Length; ctr++)
         {
+            //Debug.Log("Generating Tile at (" + ctr + ", " + rownumber + ")");
+            
             switch (row[ctr])
             {
                 case '-':
@@ -150,6 +157,11 @@ public class TileMapGenerator : MonoBehaviour
         EditorUtility.SetDirty(refFile);
         AssetDatabase.SaveAssetIfDirty(refFile);
         AssetDatabase.Refresh();
+    }
+
+    private bool CheckForRefFile()
+    {
+        return true;
     }
 
     private (int, int, int, int)[] GenerateRoomPositions(int width, int height, int numberOfRooms, int maxFailures)

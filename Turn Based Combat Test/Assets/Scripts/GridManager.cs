@@ -37,6 +37,9 @@ public class GridManager : MonoBehaviour
             }
         }
 
+        // make sure all the character positions are up to date
+        CheckCharacterTiles();
+
         // get the square bounds of the walking range
         int startingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) - walkingRange, 1, tilesmap.GetLength(0) - 1);
         int endingX = Mathf.Clamp(Mathf.RoundToInt(startingPosition.x) + walkingRange, 1, tilesmap.GetLength(0) - 1);
@@ -129,7 +132,7 @@ public class GridManager : MonoBehaviour
         CharacterPathfinding[] characters = FindObjectsOfType<CharacterPathfinding>();
         foreach (CharacterPathfinding character in characters)
         {
-            Debug.Log("Character at " + character.transform.position);
+            //Debug.Log("Character at " + character.transform.position);
             SetTileWalkable(new Vector2Int(Mathf.RoundToInt(character.transform.position.x), Mathf.RoundToInt(character.transform.position.y)), 0f);
             
         }
