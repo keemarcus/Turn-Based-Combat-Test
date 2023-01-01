@@ -9,6 +9,7 @@ public class CharacterManager : MonoBehaviour
     public CharacterState deadState;
     public CharacterPathfinding charPathfinding;
     public AttackIndicatorManager attackIndicator;
+    public DoorIndicatorManager doorIndicator;
     public HealthBarManager healthBarManager;
     
     public Rigidbody2D body;
@@ -29,17 +30,19 @@ public class CharacterManager : MonoBehaviour
         public int ActionPoints;
         public int AttackRange;
         public int AttackCost;
+        public int OpenCost;
         public int BaseDamage;
         public int HitBonus;
         public int DamageResistance;
 
-        public CharacterStats(int maxHP, int actionPoints, int attackRange, int attactCost, int baseDamage, int hitBonus, int damageResistance)
+        public CharacterStats(int maxHP, int actionPoints, int attackRange, int attactCost, int openCost, int baseDamage, int hitBonus, int damageResistance)
         {
             MaxHP = maxHP;
             CurrentHP = MaxHP;
             ActionPoints = actionPoints;
             AttackRange = attackRange;
             AttackCost = attactCost;
+            OpenCost = openCost;
             BaseDamage = baseDamage;
             HitBonus = hitBonus;
             DamageResistance = damageResistance;
@@ -57,6 +60,7 @@ public class CharacterManager : MonoBehaviour
         turnManager = FindObjectOfType<Camera>().GetComponentInChildren<TurnManager>();
 
         attackIndicator = FindObjectOfType<AttackIndicatorManager>();
+        doorIndicator = FindObjectOfType<DoorIndicatorManager>();
         healthBarManager = this.gameObject.GetComponentInChildren<HealthBarManager>();
 
         characterStats.CurrentHP = characterStats.MaxHP;

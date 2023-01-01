@@ -11,9 +11,12 @@ public class TileMapGenerator : MonoBehaviour
     public string refFileName;
     private Tilemap groundLayer;
     private Tilemap wallLayer;
+    private Tilemap overhangLayer;
 
     public Tile groundTile;
     public RuleTile wallTile;
+    public Tile headerTile;
+    public GameObject door;
 
     public TextAsset refFile;
     private int numberOfRows;
@@ -29,6 +32,8 @@ public class TileMapGenerator : MonoBehaviour
         if(groundLayer == null) { Debug.Log("No tilemap found for ground layer"); }
         wallLayer = this.gameObject.transform.Find("Walls").GetComponent<Tilemap>();
         if (wallLayer == null) { Debug.Log("No tilemap found for wall layer"); }
+        overhangLayer = this.gameObject.transform.Find("Overhang").GetComponent<Tilemap>();
+        if (wallLayer == null) { Debug.Log("No tilemap found for overhang layer"); }
 
         // get the grid manager
         gridManager = this.gameObject.GetComponent<GridManager>();
@@ -107,6 +112,18 @@ public class TileMapGenerator : MonoBehaviour
                 case 'p':
                     // add a player spawn point for this space
                     spawnManager.AddPlayerSpawnPoint(new Vector2(ctr + 1, rownumber + 1));
+                    // also place a ground tile under this space
+                    groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
+                    break;
+                case 'h':
+                    // place a header tile in this space
+                    overhangLayer.SetTile(new Vector3Int(ctr, rownumber), headerTile);
+                    // also place a ground tile under this space
+                    groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
+                    break;
+                case 'd':
+                    // place a door in this space
+                    Instantiate(door, new Vector3(ctr + 1, rownumber + 1.4f), Quaternion.identity);
                     // also place a ground tile under this space
                     groundLayer.SetTile(new Vector3Int(ctr, rownumber), groundTile);
                     break;

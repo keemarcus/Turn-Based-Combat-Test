@@ -55,7 +55,32 @@ public class PlayerCharacterIdle : CharacterState
                     characterManager.attackIndicator.UpdateCostText("");
                     characterManager.attackIndicator.gameObject.SetActive(false);
                 }
+
+                //Debug.Log("door indicator code");
                 
+                //Debug.Log(Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y)));
+                //update the door indicator
+                DoorManager door = characterManager.charPathfinding.gridManager.GetDoorOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y)));
+                //Debug.Log("Condition 1: " + (door != null));
+                //Debug.Log("Condition 2: " + (characterManager.charPathfinding.movesLeft >= characterManager.characterStats.OpenCost));
+                //Debug.Log("Condition 3: " + (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y)) <= 1f));
+                if (door != null && characterManager.charPathfinding.movesLeft >= characterManager.characterStats.OpenCost && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= 1f)
+                {
+                    if (!characterManager.doorIndicator.gameObject.activeInHierarchy)
+                    {
+                        characterManager.doorIndicator.UpdateCostText(characterManager.characterStats.OpenCost.ToString());
+                        characterManager.doorIndicator.gameObject.SetActive(true);
+                    }
+                }
+                else
+                {
+                    // disable the door indicator
+                    if (characterManager.doorIndicator.gameObject.activeInHierarchy)
+                    {
+                        characterManager.doorIndicator.UpdateCostText("");
+                        characterManager.doorIndicator.gameObject.SetActive(false);
+                    }
+                }
             }
         }
 
@@ -64,7 +89,9 @@ public class PlayerCharacterIdle : CharacterState
         {
             if (characterManager.charPathfinding.gridManager.CheckIfPointOnGrid(mouseCell))
             {
-                if (characterManager.charPathfinding.gridManager.CheckIfCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y))) && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= characterManager.characterStats.AttackRange)
+                // handle attacks
+                if(characterManager.attackIndicator.isActiveAndEnabled)
+                //if (characterManager.charPathfinding.gridManager.CheckIfCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y))) && (Mathf.RoundToInt(Mathf.Abs(this.transform.position.x - noZ.x)) + Mathf.RoundToInt(Mathf.Abs(this.transform.position.y - noZ.y))) <= characterManager.characterStats.AttackRange)
                 {
                     CharacterManager enemy = characterManager.charPathfinding.gridManager.GetCharacterOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y)), characterManager);
                     if (enemy == null || enemy.currentState == enemy.deadState)
@@ -96,6 +123,31 @@ public class PlayerCharacterIdle : CharacterState
                     }
 
                 }
+                // handle door interactions
+                if (characterManager.doorIndicator.isActiveAndEnabled)
+                {
+                    DoorManager door = characterManager.charPathfinding.gridManager.GetDoorOnTile(new Vector2Int(Mathf.RoundToInt(noZ.x), Mathf.RoundToInt(noZ.y)));
+                    if (door == null)
+                    {
+                        //Debug.Log("No door found");
+                    }
+                    else
+                    {
+                        // check to see if character has enough action points left to open the door
+                        if (characterManager.charPathfinding.movesLeft < characterManager.characterStats.OpenCost)
+                        {
+                            Debug.Log("Not enough action points left to open");
+                            return this;
+                        }
+                        else
+                        {
+                            characterManager.charPathfinding.UpdateMovesLeft(characterManager.characterStats.OpenCost);
+                            tilesHighlighted = false;
+                            door.ToggleState();
+                        }
+                    }
+                }
+                // handle movement
                 else if (characterManager.charPathfinding.gridManager.CheckIfPointInRange(characterManager.charPathfinding.movesLeft, this.transform.position, noZ))
                 {
                     characterManager.charPathfinding.MoveToTile(mouseCell.x + 1, mouseCell.y + 1);

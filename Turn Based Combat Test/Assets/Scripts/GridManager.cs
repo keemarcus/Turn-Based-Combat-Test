@@ -159,4 +159,20 @@ public class GridManager : MonoBehaviour
 
         return rightCharacter;
     }
+
+    public DoorManager GetDoorOnTile(Vector2Int tile)
+    {
+        DoorManager rightDoor = null;
+        DoorManager[] allDoors = FindObjectsOfType<DoorManager>();
+        foreach (DoorManager door in allDoors)
+        {
+            if (Vector2.Distance(door.transform.position, tile) < 1f)
+            {
+                rightDoor = door;
+                break;
+            }
+        }
+
+        return rightDoor;
+    }
 }
